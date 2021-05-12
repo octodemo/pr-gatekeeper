@@ -40,6 +40,7 @@ const core = __importStar(__webpack_require__(186));
 const github = __importStar(__webpack_require__(438));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info('Starting...');
         try {
             if (github.context.eventName !== 'pull_request' &&
                 github.context.eventName !== 'pull_request_review') {

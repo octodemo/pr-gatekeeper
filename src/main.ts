@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as github from '@actions/github'
 
 async function run(): Promise<void> {
+  core.info('Starting...')
   try {
     if (
       github.context.eventName !== 'pull_request' &&
