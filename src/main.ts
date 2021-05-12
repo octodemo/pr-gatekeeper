@@ -16,7 +16,7 @@ async function run(): Promise<void> {
     }
     const payload = context.payload as
       | Webhooks.PullRequestEvent
-      | Webhooks.PullRequestReviewCommentEvent
+      | Webhooks.PullRequestReviewEvent
 
     const required_reviewers: string[] = core
       .getInput('required_reviewers')
