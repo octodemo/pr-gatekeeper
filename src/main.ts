@@ -1,16 +1,22 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
+import * as github from '@actions/github'
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    if (
+      github.context.eventName !== 'pull_request' &&
+      github.context.eventName !== 'pull_request_review'
+    ) {
+      core.setFailed(
+        `Invalid event: ${github.context.eventName}. This action should be triggered on pull_request and pull_request_review`
+      )
+      return
+    }
 
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const required_reviewers: string[] = core
+      .getInput('required_reviewers')
+      .split(',')
+    core.debug(`Required reviewers: ${required_reviewers}`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
   } catch (error) {
     core.setFailed(error.message)
   }
