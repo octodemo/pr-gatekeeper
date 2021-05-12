@@ -5,6 +5,9 @@ inputs:
   required_reviewers:
     required: true
     description: 'List of required reviewers (comma separated)'
+  token:
+    required: true
+    description: 'Repository token'
 runs:
   using: 'node12'
   main: 'dist/index.js'
