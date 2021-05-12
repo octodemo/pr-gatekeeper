@@ -1,18 +1,22 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import * as Webhooks from '@octokit/webhooks-types'
 
 async function run(): Promise<void> {
-  core.info('Starting...')
   try {
+    const context = github.context
     if (
-      github.context.eventName !== 'pull_request' &&
-      github.context.eventName !== 'pull_request_review'
+      context.eventName !== 'pull_request' &&
+      context.eventName !== 'pull_request_review'
     ) {
       core.setFailed(
-        `Invalid event: ${github.context.eventName}. This action should be triggered on pull_request and pull_request_review`
+        `Invalid event: ${context.eventName}. This action should be triggered on pull_request and pull_request_review`
       )
       return
     }
+    const payload = context.payload as
+      | Webhooks.PullRequestEvent
+      | Webhooks.PullRequestReviewCommentEvent
 
     const required_reviewers: string[] = core
       .getInput('required_reviewers')
@@ -22,9 +26,11 @@ async function run(): Promise<void> {
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
     const reviews = await octokit.pulls.listReviews({
-      ...github.context.repo,
-      pull_number: github.context.payload.pull_request!.number
+      ...context.repo,
+      pull_number: payload.pull_request.number
     })
+
+    // Create a map of reviewers' state
     const userReviews = new Map<string, string>()
     for (const review of reviews.data) {
       userReviews.set(review.user!.login, review.state)
@@ -32,6 +38,10 @@ async function run(): Promise<void> {
 
     const need_review_by = []
     for (const required_reviewer of required_reviewers) {
+      if (required_reviewer === payload.pull_request.user.login) {
+        // Skip PR owner because PR owner cannot approve the PR.
+        continue
+      }
       if (
         !userReviews.has(required_reviewer) ||
         userReviews.get(required_reviewer) !== 'APPROVED'
