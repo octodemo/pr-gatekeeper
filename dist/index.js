@@ -50,7 +50,7 @@ function run() {
             const required_reviewers = core
                 .getInput('required_reviewers')
                 .split(',');
-            core.info(`Required reviewers: ${required_reviewers}`); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+            core.debug(`Required reviewers: ${required_reviewers}`); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
         }
         catch (error) {
             core.setFailed(error.message);
