@@ -11,6 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: ./
+      - uses: octodemo/review-approval-action@main
         with:
           required_reviewers: 'yuichielectric,rerwinx,dchomh'
