@@ -17,7 +17,7 @@ async function run(): Promise<void> {
     const required_reviewers: string[] = core
       .getInput('required_reviewers')
       .split(',')
-    core.debug(`Required reviewers: ${required_reviewers}`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
+    core.info(`Required reviewers: ${required_reviewers}`) // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
   } catch (error) {
     core.setFailed(error.message)
   }
