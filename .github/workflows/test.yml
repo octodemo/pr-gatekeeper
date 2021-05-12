@@ -14,3 +14,4 @@ jobs:
       - uses: ./
         with:
           required_reviewers: 'yuichielectric,rerwinx,dchomh'
+          token: ${{ secrets.GITHUB_TOKEN }}
