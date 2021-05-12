@@ -13,5 +13,5 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./
         with:
-          required_reviewers: 'yuichielectric,rerwinx,dchomh'
+          required_reviewers: 'yuichielectric-demo,rerwinx,dchomh'
           token: ${{ secrets.GITHUB_TOKEN }}
