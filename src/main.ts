@@ -1,6 +1,8 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 import * as Webhooks from '@octokit/webhooks-types'
+import * as fs from 'fs'
+import * as YAML from 'yaml'
 
 async function run(): Promise<void> {
   try {
@@ -18,11 +20,28 @@ async function run(): Promise<void> {
       | Webhooks.PullRequestEvent
       | Webhooks.PullRequestReviewEvent
 
-    const required_reviewers: string[] = core
-      .getInput('required_reviewers')
-      .split(',')
-    core.debug(`Required reviewers: ${required_reviewers}`)
+    // Read values from config file if it exists
+    let config_file_contents;
+    try {
+    const config_file = fs.readFileSync('./.github/approve_config.yml', 'utf8')
+      
+    // Parse contents of config file into variable
+    config_file_contents = YAML.parse(config_file)
+    } catch(error)
+    {}
 
+    // Prioritize config file content over settings in actions file
+    let required_reviewers: string[]
+    if (config_file_contents) {
+      required_reviewers = config_file_contents
+        .required_reviewers
+      core.debug(`Required reviewers (from file): ${required_reviewers}`)
+    } else {
+      required_reviewers = core
+        .getInput('required_reviewers')
+        .split(',')
+      core.debug(`Required reviewers (from action config): ${required_reviewers}`)
+    }
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
     const reviews = await octokit.pulls.listReviews({
