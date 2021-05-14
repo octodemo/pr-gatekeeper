@@ -3,7 +3,7 @@ import * as github from '@actions/github'
 import * as Webhooks from '@octokit/webhooks-types'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
-import { Settings, RequiredReviewers } from './required_reviewers'
+import {Settings, RequiredReviewers} from './required_reviewers'
 
 async function run(): Promise<void> {
   try {
@@ -22,12 +22,14 @@ async function run(): Promise<void> {
       | Webhooks.PullRequestReviewEvent
 
     // Read values from config file if it exists
-    const config_file = fs.readFileSync(, 'utf8')
+    const config_file = fs.readFileSync('./.github/approve_config.yml', 'utf8')
 
     // Parse contents of config file into variable
     const config_file_contents = YAML.parse(config_file)
 
-    const required_reviewers = new RequiredReviewers(config_file_contents as Settings).getReviewers()
+    const required_reviewers = new RequiredReviewers(
+      config_file_contents as Settings
+    ).getReviewers()
 
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)

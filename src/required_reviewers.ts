@@ -5,7 +5,7 @@ export type Settings = {
 }
 
 export class RequiredReviewers {
-  constructor(private settings: Settings) { }
+  constructor(private settings: Settings) {}
   getReviewers(): string[] {
     let required_reviewers: string[] = []
     if (this.settings) {
