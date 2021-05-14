@@ -22,13 +22,10 @@ async function run(): Promise<void> {
 
     // Read values from config file if it exists
     let config_file_contents;
-    try {
     const config_file = fs.readFileSync('./.github/approve_config.yml', 'utf8')
       
     // Parse contents of config file into variable
     config_file_contents = YAML.parse(config_file)
-    } catch(error)
-    {}
 
     // Prioritize config file content over settings in actions file
     let required_reviewers: string[]
@@ -37,11 +34,9 @@ async function run(): Promise<void> {
         .required_reviewers
       core.debug(`Required reviewers (from file): ${required_reviewers}`)
     } else {
-      required_reviewers = core
-        .getInput('required_reviewers')
-        .split(',')
-      core.debug(`Required reviewers (from action config): ${required_reviewers}`)
-    }
+      // If file does not exist, set to null
+      required_reviewers = []
+          }
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
     const reviews = await octokit.pulls.listReviews({
