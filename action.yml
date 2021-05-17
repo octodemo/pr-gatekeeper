@@ -2,9 +2,6 @@ name: 'Your name here'
 description: 'Provide a description here'
 author: 'Your name or organization here'
 inputs:
-  required_reviewers:
-    required: true
-    description: 'List of required reviewers (comma separated)'
   token:
     required: true
     description: 'Repository token'
