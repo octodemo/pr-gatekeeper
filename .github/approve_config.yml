@@ -1,6 +1,6 @@
 approvals:
   # check will fail if there is no approval
-  minimum: 1
+  minimum: 4
   groups:
     # check will fail if there is not at least 1 approval
     # from backend persons
