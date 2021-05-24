@@ -16,7 +16,8 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"dbaeumer.vscode-eslint",
-		"redhat.vscode-yaml"
+		"redhat.vscode-yaml",
+		"firsttris.vscode-jest-runner"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
