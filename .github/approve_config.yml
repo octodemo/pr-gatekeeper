@@ -1,5 +1,21 @@
-required_reviewers:
-  - dchomh
-  - yuichielectric
-  - rerwinx
-  
+approvals:
+  # check will succeed if there are 4 approvals from
+  # backend or frontend people
+  minimum: 2
+  groups:
+    # check will fail if there is not at least 1 approval
+    # from backend persons
+    backend:
+      minimum: 1
+      from:
+        users:
+          - yuichielectric
+          - dchomh
+    # check will fail if there is not at least 1 approval
+    # from frontend persons
+    frontend:
+      minimum: 2
+      from:
+        users:
+          - dchomh
+          - rerwinx
