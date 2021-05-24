@@ -1,6 +1,4 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+[![test](https://github.com/octodemo/review-approval-action/actions/workflows/test.yml/badge.svg)](https://github.com/octodemo/review-approval-action/actions/workflows/test.yml)
 
 # Review Approval Action
 
@@ -11,14 +9,53 @@ This is an action created for the 2021 INTL FS Hackathon where we decided to rei
 The action is configured via the `approve_config.yml` file located in the `.github` subdirectory. The general format is as follows.
 
 ```yaml
-required_reviewers:
-- <username>
-```
+approvals:
+  # check will fail if there is no approval
+  minimum: 1
+  groups:
+    # check will fail if there is not at least 1 approval
+    # from backend persons
+    backend:
+      minimum: 1
+      from:
+        users:
+          - yuichielectric
+          - dchomh
+    # check will fail if there is not at least 2 approval
+    # from frontend persons
+    frontend:
+      minimum: 2
+      from:
+        users:
+          - dchomh
+          - rerwinx
 
-We are currently working on adding a feature to specify groups in the `required_reviewers` section and to also specify the minimum number of users in that group that need to approve the PR before the action will pass.
+```
 
 Once the `approve_config.yml` file is in place, add the action to execute on every PR and then set it as a required action to start enforcing your new approval policy!
 
+```yaml
+name: 'Review Gatekeeper'
+
+on:
+  pull_request:
+    types: [assigned, unassigned, opened, reopened, synchronize, review_requested, review_request_removed]
+  pull_request_review:
+
+jobs:
+  review-gatekeeper:
+    name: Review Gatekeeper
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: octodemo/review-approval-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+```
+
 ## TODO for future
 
-We have not implemented the main logic that allows people to specify groups as required reviewers. In its current state, the action is equivalent to the feature that we provide in protected branches.
+- Add a way to specify reviewers by GitHub team.
+- Add Dismiss stale pull request approvals when new commits are pushed equivalent option.
+- Ignore PR owner's review
+- Publish at GitHub Marketplace
