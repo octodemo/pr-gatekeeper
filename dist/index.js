@@ -54,28 +54,18 @@ function run() {
             const config_file = fs.readFileSync('./.github/approve_config.yml', 'utf8');
             // Parse contents of config file into variable
             const config_file_contents = YAML.parse(config_file);
-            const required_reviewers = new required_reviewers_1.RequiredReviewers(config_file_contents).getReviewers();
             const token = core.getInput('token');
             const octokit = github.getOctokit(token);
             const reviews = yield octokit.pulls.listReviews(Object.assign(Object.assign({}, context.repo), { pull_number: payload.pull_request.number }));
-            // Create a map of reviewers' state
-            const userReviews = new Map();
+            const approved_users = new Set();
             for (const review of reviews.data) {
-                userReviews.set(review.user.login, review.state);
-            }
-            const need_review_by = [];
-            for (const required_reviewer of required_reviewers) {
-                if (required_reviewer === payload.pull_request.user.login) {
-                    // Skip PR owner because PR owner cannot approve the PR.
-                    continue;
-                }
-                if (!userReviews.has(required_reviewer) ||
-                    userReviews.get(required_reviewer) !== 'APPROVED') {
-                    need_review_by.push(required_reviewer);
+                if (review.state === `APPROVED`) {
+                    approved_users.add(review.user.login);
                 }
             }
-            if (need_review_by.length > 0) {
-                core.setFailed(`Review approval from ${need_review_by} is required`);
+            const review_policy = new required_reviewers_1.RequiredReviewers(config_file_contents, Array.from(approved_users));
+            if (!review_policy.satisfy()) {
+                core.setFailed('More reviews required');
                 return;
             }
         }
@@ -90,43 +80,77 @@ run();
 /***/ }),
 
 /***/ 2567:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RequiredReviewers = void 0;
-const core = __importStar(__nccwpck_require__(2186));
+function eqSet(as, bs) {
+    if (as.size !== bs.size) {
+        return false;
+    }
+    for (const a of as) {
+        if (!bs.has(a)) {
+            return false;
+        }
+    }
+    return true;
+}
 class RequiredReviewers {
-    constructor(settings) {
+    constructor(settings, approved_users) {
         this.settings = settings;
+        this.approved_users = approved_users;
+    }
+    satisfy() {
+        const approvals = this.settings.approvals;
+        // check if the minimum criteria is met.
+        if (approvals.minimum) {
+            if (approvals.minimum > this.approved_users.length) {
+                return false;
+            }
+        }
+        // check if the groups criteria is met.
+        const approved = new Set(this.approved_users);
+        if (approvals.groups) {
+            for (const group in approvals.groups) {
+                const required_users = new Set(approvals.groups[group].from.users);
+                const approved_from_this_group = new Set([...required_users].filter(e => approved.has(e)));
+                const minimum_of_group = approvals.groups[group].minimum;
+                if (minimum_of_group) {
+                    if (minimum_of_group > approved_from_this_group.size) {
+                        return false;
+                    }
+                    else {
+                        // Go on to the next group.
+                        continue;
+                    }
+                }
+                else {
+                    // If no `minimum` option is specified, approval from all is required.
+                    if (!eqSet(approved_from_this_group, required_users)) {
+                        return false;
+                    }
+                    else {
+                        // Go on to the next group.
+                        continue;
+                    }
+                }
+            }
+        }
+        return true;
     }
     getReviewers() {
-        let required_reviewers = [];
+        const required_reviewers = new Set();
         if (this.settings) {
-            required_reviewers = this.settings.required_reviewers;
-            core.debug(`Required reviewers: ${required_reviewers}`);
+            const approvals = this.settings.approvals;
+            for (const group in approvals.groups) {
+                for (const user of approvals.groups[group].from.users) {
+                    required_reviewers.add(user);
+                }
+            }
         }
-        return required_reviewers;
+        return Array.from(required_reviewers);
     }
 }
 exports.RequiredReviewers = RequiredReviewers;

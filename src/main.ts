@@ -27,39 +27,25 @@ async function run(): Promise<void> {
     // Parse contents of config file into variable
     const config_file_contents = YAML.parse(config_file)
 
-    const required_reviewers = new RequiredReviewers(
-      config_file_contents as Settings
-    ).getReviewers()
-
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
     const reviews = await octokit.pulls.listReviews({
       ...context.repo,
       pull_number: payload.pull_request.number
     })
-
-    // Create a map of reviewers' state
-    const userReviews = new Map<string, string>()
+    const approved_users: Set<string> = new Set()
     for (const review of reviews.data) {
-      userReviews.set(review.user!.login, review.state)
-    }
-
-    const need_review_by = []
-    for (const required_reviewer of required_reviewers) {
-      if (required_reviewer === payload.pull_request.user.login) {
-        // Skip PR owner because PR owner cannot approve the PR.
-        continue
-      }
-      if (
-        !userReviews.has(required_reviewer) ||
-        userReviews.get(required_reviewer) !== 'APPROVED'
-      ) {
-        need_review_by.push(required_reviewer)
+      if (review.state === `APPROVED`) {
+        approved_users.add(review.user!.login)
       }
     }
 
-    if (need_review_by.length > 0) {
-      core.setFailed(`Review approval from ${need_review_by} is required`)
+    const review_policy = new RequiredReviewers(
+      config_file_contents as Settings,
+      Array.from(approved_users)
+    )
+    if (!review_policy.satisfy()) {
+      core.setFailed('More reviews required')
       return
     }
   } catch (error) {
