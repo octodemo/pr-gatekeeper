@@ -143,18 +143,6 @@ class RequiredReviewers {
         }
         return true;
     }
-    getReviewers() {
-        const required_reviewers = new Set();
-        if (this.settings) {
-            const approvals = this.settings.approvals;
-            for (const group in approvals.groups) {
-                for (const user of approvals.groups[group].from.users) {
-                    required_reviewers.add(user);
-                }
-            }
-        }
-        return Array.from(required_reviewers);
-    }
 }
 exports.RequiredReviewers = RequiredReviewers;
 
