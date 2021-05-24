@@ -31,13 +31,16 @@ function set_intersect<T>(as: Set<T>, bs: Set<T>): Set<T> {
 export class ReviewGatekeeper {
   constructor(private settings: Settings, private approved_users: string[]) {}
 
-  satisfy(): boolean {
+  satisfy(): [boolean, string | null] {
     const approvals = this.settings.approvals
 
     // check if the minimum criteria is met.
     if (approvals.minimum) {
       if (approvals.minimum > this.approved_users.length) {
-        return false
+        return [
+          false,
+          `${approvals.minimum} reviewers should approve this PR (currently: ${this.approved_users.length})`
+        ]
       }
     }
 
@@ -50,7 +53,10 @@ export class ReviewGatekeeper {
         const minimum_of_group = approvals.groups[group].minimum
         if (minimum_of_group) {
           if (minimum_of_group > approved_from_this_group.size) {
-            return false
+            return [
+              false,
+              `${minimum_of_group} reviewers from the group '${group}' should approve this PR (currently: ${approved_from_this_group.size})`
+            ]
           } else {
             // Go on to the next group.
             continue
@@ -58,7 +64,10 @@ export class ReviewGatekeeper {
         } else {
           // If no `minimum` option is specified, approval from all is required.
           if (!set_equal(approved_from_this_group, required_users)) {
-            return false
+            return [
+              false,
+              `All of the reviewers from the group '${group}' should approve this PR`
+            ]
           } else {
             // Go on to the next group.
             continue
@@ -66,6 +75,6 @@ export class ReviewGatekeeper {
         }
       }
     }
-    return true
+    return [true, null]
   }
 }
