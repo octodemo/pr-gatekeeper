@@ -1,7 +1,6 @@
 approvals:
   # check will succeed if there are 4 approvals from
   # backend or frontend people
-  minimum: 2
   groups:
     # check will fail if there is not at least 1 approval
     # from backend persons
