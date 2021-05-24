@@ -86,7 +86,7 @@ run();
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.RequiredReviewers = void 0;
-function eqSet(as, bs) {
+function set_equal(as, bs) {
     if (as.size !== bs.size) {
         return false;
     }
@@ -96,6 +96,9 @@ function eqSet(as, bs) {
         }
     }
     return true;
+}
+function set_intersect(as, bs) {
+    return new Set([...as].filter(e => bs.has(e)));
 }
 class RequiredReviewers {
     constructor(settings, approved_users) {
@@ -115,7 +118,7 @@ class RequiredReviewers {
         if (approvals.groups) {
             for (const group in approvals.groups) {
                 const required_users = new Set(approvals.groups[group].from.users);
-                const approved_from_this_group = new Set([...required_users].filter(e => approved.has(e)));
+                const approved_from_this_group = set_intersect(required_users, approved);
                 const minimum_of_group = approvals.groups[group].minimum;
                 if (minimum_of_group) {
                     if (minimum_of_group > approved_from_this_group.size) {
@@ -128,7 +131,7 @@ class RequiredReviewers {
                 }
                 else {
                     // If no `minimum` option is specified, approval from all is required.
-                    if (!eqSet(approved_from_this_group, required_users)) {
+                    if (!set_equal(approved_from_this_group, required_users)) {
                         return false;
                     }
                     else {

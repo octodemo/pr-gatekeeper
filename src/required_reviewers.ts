@@ -12,7 +12,7 @@ export interface Settings {
   }
 }
 
-function eqSet<T>(as: Set<T>, bs: Set<T>): boolean {
+function set_equal<T>(as: Set<T>, bs: Set<T>): boolean {
   if (as.size !== bs.size) {
     return false
   }
@@ -22,6 +22,10 @@ function eqSet<T>(as: Set<T>, bs: Set<T>): boolean {
     }
   }
   return true
+}
+
+function set_intersect<T>(as: Set<T>, bs: Set<T>): Set<T> {
+  return new Set([...as].filter(e => bs.has(e)))
 }
 
 export class RequiredReviewers {
@@ -42,9 +46,7 @@ export class RequiredReviewers {
     if (approvals.groups) {
       for (const group in approvals.groups) {
         const required_users = new Set(approvals.groups[group].from.users)
-        const approved_from_this_group = new Set(
-          [...required_users].filter(e => approved.has(e))
-        )
+        const approved_from_this_group = set_intersect(required_users, approved)
         const minimum_of_group = approvals.groups[group].minimum
         if (minimum_of_group) {
           if (minimum_of_group > approved_from_this_group.size) {
@@ -55,7 +57,7 @@ export class RequiredReviewers {
           }
         } else {
           // If no `minimum` option is specified, approval from all is required.
-          if (!eqSet(approved_from_this_group, required_users)) {
+          if (!set_equal(approved_from_this_group, required_users)) {
             return false
           } else {
             // Go on to the next group.
