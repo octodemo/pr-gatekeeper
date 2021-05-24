@@ -1,17 +1,30 @@
 import * as core from '@actions/core'
 
-export type Settings = {
-  required_reviewers: string[]
+export interface Settings {
+  approvals: {
+    minimum?: number
+    groups: {
+      [key: string]: {
+        from: {
+          users: string[]
+        }
+      }
+    }
+  }
 }
 
 export class RequiredReviewers {
   constructor(private settings: Settings) {}
   getReviewers(): string[] {
-    let required_reviewers: string[] = []
+    const required_reviewers: Set<string> = new Set()
     if (this.settings) {
-      required_reviewers = this.settings.required_reviewers
-      core.debug(`Required reviewers: ${required_reviewers}`)
+      const approvals = this.settings.approvals
+      for (const group in approvals.groups) {
+        for (const user of approvals.groups[group].from.users) {
+          required_reviewers.add(user)
+        }
+      }
     }
-    return required_reviewers
+    return Array.from(required_reviewers)
   }
 }
