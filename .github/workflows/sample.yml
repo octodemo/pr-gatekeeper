@@ -1,4 +1,4 @@
-name: 'sample-review'
+name: 'Review Gatekeeper'
 
 on:
   pull_request:
@@ -6,8 +6,8 @@ on:
   pull_request_review:
 
 jobs:
-  test:
-    name: Test
+  review-gatekeeper:
+    name: Review Gatekeeper
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
