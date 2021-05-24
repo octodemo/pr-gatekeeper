@@ -55,7 +55,7 @@ export class ReviewGatekeeper {
           if (minimum_of_group > approved_from_this_group.size) {
             return [
               false,
-              `${minimum_of_group} reviewers from the group '${group}' should approve this PR (currently: ${approved_from_this_group.size})`
+              `${minimum_of_group} reviewers from the group '${group}' (${required_users}) should approve this PR (currently: ${approved_from_this_group.size})`
             ]
           } else {
             // Go on to the next group.
@@ -66,7 +66,7 @@ export class ReviewGatekeeper {
           if (!set_equal(approved_from_this_group, required_users)) {
             return [
               false,
-              `All of the reviewers from the group '${group}' should approve this PR`
+              `All of the reviewers from the group '${group}' (${required_users}) should approve this PR`
             ]
           } else {
             // Go on to the next group.
