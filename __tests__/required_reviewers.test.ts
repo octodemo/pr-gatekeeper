@@ -1,4 +1,4 @@
-import {Settings, RequiredReviewers} from '../src/required_reviewers'
+import {Settings, ReviewGatekeeper} from '../src/required_reviewers'
 
 test('Top level minimum', async () => {
   const settings: Settings = {
@@ -8,15 +8,15 @@ test('Top level minimum', async () => {
   }
 
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2', 'user3']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user3', 'user4']).satisfy()
+    new ReviewGatekeeper(settings, ['user3', 'user4']).satisfy()
   ).toBeTruthy()
-  expect(new RequiredReviewers(settings, ['user1']).satisfy()).toBeFalsy()
+  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()).toBeFalsy()
 })
 
 test('One group without minimum', async () => {
@@ -33,12 +33,12 @@ test('One group without minimum', async () => {
   }
 
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2', 'user3']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
-  expect(new RequiredReviewers(settings, ['user1']).satisfy()).toBeFalsy()
+  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()).toBeFalsy()
 })
 
 test('Multiple groups without minimum', async () => {
@@ -60,7 +60,7 @@ test('Multiple groups without minimum', async () => {
   }
 
   expect(
-    new RequiredReviewers(settings, [
+    new ReviewGatekeeper(settings, [
       'user1',
       'user2',
       'user3',
@@ -68,7 +68,7 @@ test('Multiple groups without minimum', async () => {
     ]).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, [
+    new ReviewGatekeeper(settings, [
       'user1',
       'user2',
       'user3',
@@ -77,10 +77,10 @@ test('Multiple groups without minimum', async () => {
     ]).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2', 'user3']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeFalsy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeFalsy()
 })
 
@@ -99,15 +99,15 @@ test('One group with minimum', async () => {
   }
 
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2', 'user3']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2', 'user4']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user4']).satisfy()
   ).toBeTruthy()
-  expect(new RequiredReviewers(settings, ['user1']).satisfy()).toBeFalsy()
+  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()).toBeFalsy()
 })
 
 test('Multiple groups with minimum', async () => {
@@ -131,15 +131,15 @@ test('Multiple groups with minimum', async () => {
   }
 
   expect(
-    new RequiredReviewers(settings, ['user1', 'user3', 'user4']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user3', 'user4']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2', 'user4']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user4']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2', 'user3']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
   expect(
-    new RequiredReviewers(settings, ['user1', 'user2']).satisfy()
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeFalsy()
 })

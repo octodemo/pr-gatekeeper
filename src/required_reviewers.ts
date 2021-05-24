@@ -28,7 +28,7 @@ function set_intersect<T>(as: Set<T>, bs: Set<T>): Set<T> {
   return new Set([...as].filter(e => bs.has(e)))
 }
 
-export class RequiredReviewers {
+export class ReviewGatekeeper {
   constructor(private settings: Settings, private approved_users: string[]) {}
 
   satisfy(): boolean {

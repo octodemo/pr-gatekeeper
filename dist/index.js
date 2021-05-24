@@ -63,7 +63,7 @@ function run() {
                     approved_users.add(review.user.login);
                 }
             }
-            const review_policy = new required_reviewers_1.RequiredReviewers(config_file_contents, Array.from(approved_users));
+            const review_policy = new required_reviewers_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
             if (!review_policy.satisfy()) {
                 core.setFailed('More reviews required');
                 return;
@@ -85,7 +85,7 @@ run();
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RequiredReviewers = void 0;
+exports.ReviewGatekeeper = void 0;
 function set_equal(as, bs) {
     if (as.size !== bs.size) {
         return false;
@@ -100,7 +100,7 @@ function set_equal(as, bs) {
 function set_intersect(as, bs) {
     return new Set([...as].filter(e => bs.has(e)));
 }
-class RequiredReviewers {
+class ReviewGatekeeper {
     constructor(settings, approved_users) {
         this.settings = settings;
         this.approved_users = approved_users;
@@ -144,7 +144,7 @@ class RequiredReviewers {
         return true;
     }
 }
-exports.RequiredReviewers = RequiredReviewers;
+exports.ReviewGatekeeper = ReviewGatekeeper;
 
 
 /***/ }),

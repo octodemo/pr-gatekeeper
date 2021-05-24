@@ -3,7 +3,7 @@ import * as github from '@actions/github'
 import * as Webhooks from '@octokit/webhooks-types'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
-import {Settings, RequiredReviewers} from './required_reviewers'
+import {Settings, ReviewGatekeeper} from './required_reviewers'
 
 async function run(): Promise<void> {
   try {
@@ -40,7 +40,7 @@ async function run(): Promise<void> {
       }
     }
 
-    const review_policy = new RequiredReviewers(
+    const review_policy = new ReviewGatekeeper(
       config_file_contents as Settings,
       Array.from(approved_users)
     )
