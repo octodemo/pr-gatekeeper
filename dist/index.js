@@ -51,7 +51,7 @@ function run() {
             }
             const payload = context.payload;
             // Read values from config file if it exists
-            const config_file = fs.readFileSync('./.github/approve_config.yml', 'utf8');
+            const config_file = fs.readFileSync(core.getInput('config-file'), 'utf8');
             // Parse contents of config file into variable
             const config_file_contents = YAML.parse(config_file);
             const token = core.getInput('token');
