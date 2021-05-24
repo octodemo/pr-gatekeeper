@@ -39,7 +39,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const fs = __importStar(__nccwpck_require__(5747));
 const YAML = __importStar(__nccwpck_require__(3552));
-const required_reviewers_1 = __nccwpck_require__(2567);
+const review_gatekeeper_1 = __nccwpck_require__(302);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -63,7 +63,7 @@ function run() {
                     approved_users.add(review.user.login);
                 }
             }
-            const review_policy = new required_reviewers_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
+            const review_policy = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
             if (!review_policy.satisfy()) {
                 core.setFailed('More reviews required');
                 return;
@@ -79,7 +79,7 @@ run();
 
 /***/ }),
 
-/***/ 2567:
+/***/ 302:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
