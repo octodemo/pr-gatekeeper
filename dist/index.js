@@ -101,6 +101,9 @@ function set_equal(as, bs) {
 function set_intersect(as, bs) {
     return new Set([...as].filter(e => bs.has(e)));
 }
+function set_to_string(as) {
+    return [...as].join(', ');
+}
 class ReviewGatekeeper {
     constructor(settings, approved_users) {
         this.settings = settings;
@@ -128,7 +131,7 @@ class ReviewGatekeeper {
                     if (minimum_of_group > approved_from_this_group.size) {
                         return [
                             false,
-                            `${minimum_of_group} reviewers from the group '${group}' (${required_users}) should approve this PR (currently: ${approved_from_this_group.size})`
+                            `${minimum_of_group} reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR (currently: ${approved_from_this_group.size})`
                         ];
                     }
                     else {
@@ -141,7 +144,7 @@ class ReviewGatekeeper {
                     if (!set_equal(approved_from_this_group, required_users)) {
                         return [
                             false,
-                            `All of the reviewers from the group '${group}' (${required_users}) should approve this PR`
+                            `All of the reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR`
                         ];
                     }
                     else {

@@ -28,6 +28,10 @@ function set_intersect<T>(as: Set<T>, bs: Set<T>): Set<T> {
   return new Set([...as].filter(e => bs.has(e)))
 }
 
+function set_to_string<T>(as: Set<T>): string {
+  return [...as].join(', ')
+}
+
 export class ReviewGatekeeper {
   constructor(private settings: Settings, private approved_users: string[]) {}
 
@@ -55,7 +59,11 @@ export class ReviewGatekeeper {
           if (minimum_of_group > approved_from_this_group.size) {
             return [
               false,
-              `${minimum_of_group} reviewers from the group '${group}' (${required_users}) should approve this PR (currently: ${approved_from_this_group.size})`
+              `${minimum_of_group} reviewers from the group '${group}' (${set_to_string(
+                required_users
+              )}) should approve this PR (currently: ${
+                approved_from_this_group.size
+              })`
             ]
           } else {
             // Go on to the next group.
@@ -66,7 +74,9 @@ export class ReviewGatekeeper {
           if (!set_equal(approved_from_this_group, required_users)) {
             return [
               false,
-              `All of the reviewers from the group '${group}' (${required_users}) should approve this PR`
+              `All of the reviewers from the group '${group}' (${set_to_string(
+                required_users
+              )}) should approve this PR`
             ]
           } else {
             // Go on to the next group.
