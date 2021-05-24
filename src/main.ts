@@ -3,6 +3,7 @@ import * as github from '@actions/github'
 import * as Webhooks from '@octokit/webhooks-types'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
+import {EOL} from 'os'
 import {Settings, ReviewGatekeeper} from './review_gatekeeper'
 
 async function run(): Promise<void> {
@@ -45,7 +46,7 @@ async function run(): Promise<void> {
       Array.from(approved_users)
     )
     if (!review_gatekeeper.satisfy()) {
-      core.setFailed(review_gatekeeper.getMessages().join('¥n'))
+      core.setFailed(review_gatekeeper.getMessages().join(EOL))
       return
     }
   } catch (error) {

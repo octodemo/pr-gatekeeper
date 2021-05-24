@@ -39,6 +39,7 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const fs = __importStar(__nccwpck_require__(5747));
 const YAML = __importStar(__nccwpck_require__(3552));
+const os_1 = __nccwpck_require__(2087);
 const review_gatekeeper_1 = __nccwpck_require__(302);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -65,7 +66,7 @@ function run() {
             }
             const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
             if (!review_gatekeeper.satisfy()) {
-                core.setFailed(review_gatekeeper.getMessages().join('¥n'));
+                core.setFailed(review_gatekeeper.getMessages().join(os_1.EOL));
                 return;
             }
         }
