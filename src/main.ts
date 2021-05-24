@@ -40,12 +40,13 @@ async function run(): Promise<void> {
       }
     }
 
-    const review_policy = new ReviewGatekeeper(
+    const review_gatekeeper = new ReviewGatekeeper(
       config_file_contents as Settings,
       Array.from(approved_users)
     )
-    if (!review_policy.satisfy()) {
-      core.setFailed('More reviews required')
+    const [satisfy, message] = review_gatekeeper.satisfy()
+    if (!satisfy) {
+      core.setFailed(message!)
       return
     }
   } catch (error) {
