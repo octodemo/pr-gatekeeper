@@ -44,9 +44,8 @@ async function run(): Promise<void> {
       config_file_contents as Settings,
       Array.from(approved_users)
     )
-    const [satisfy, message] = review_gatekeeper.satisfy()
-    if (!satisfy) {
-      core.setFailed(message!)
+    if (!review_gatekeeper.satisfy()) {
+      core.setFailed(review_gatekeeper.getMessages().join('¥n'))
       return
     }
   } catch (error) {

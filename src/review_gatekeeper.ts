@@ -33,18 +33,22 @@ function set_to_string<T>(as: Set<T>): string {
 }
 
 export class ReviewGatekeeper {
-  constructor(private settings: Settings, private approved_users: string[]) {}
+  private messages: string[]
+  constructor(private settings: Settings, private approved_users: string[]) {
+    this.messages = []
+  }
 
-  satisfy(): [boolean, string | null] {
+  satisfy(): boolean {
     const approvals = this.settings.approvals
+    let ret = true
 
     // check if the minimum criteria is met.
     if (approvals.minimum) {
       if (approvals.minimum > this.approved_users.length) {
-        return [
-          false,
+        ret = false
+        this.messages.push(
           `${approvals.minimum} reviewers should approve this PR (currently: ${this.approved_users.length})`
-        ]
+        )
       }
     }
 
@@ -57,34 +61,32 @@ export class ReviewGatekeeper {
         const minimum_of_group = approvals.groups[group].minimum
         if (minimum_of_group) {
           if (minimum_of_group > approved_from_this_group.size) {
-            return [
-              false,
+            ret = false
+            this.messages.push(
               `${minimum_of_group} reviewers from the group '${group}' (${set_to_string(
                 required_users
               )}) should approve this PR (currently: ${
                 approved_from_this_group.size
               })`
-            ]
-          } else {
-            // Go on to the next group.
-            continue
+            )
           }
         } else {
           // If no `minimum` option is specified, approval from all is required.
           if (!set_equal(approved_from_this_group, required_users)) {
-            return [
-              false,
+            ret = false
+            this.messages.push(
               `All of the reviewers from the group '${group}' (${set_to_string(
                 required_users
               )}) should approve this PR`
-            ]
-          } else {
-            // Go on to the next group.
-            continue
+            )
           }
         }
       }
     }
-    return [true, null]
+    return ret
+  }
+
+  getMessages(): string[] {
+    return this.messages
   }
 }

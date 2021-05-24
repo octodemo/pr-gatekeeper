@@ -8,15 +8,15 @@ test('Top level minimum', async () => {
   }
 
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user3', 'user4']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user3', 'user4']).satisfy()
   ).toBeTruthy()
-  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()[0]).toBeFalsy()
+  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()).toBeFalsy()
 })
 
 test('One group without minimum', async () => {
@@ -33,12 +33,12 @@ test('One group without minimum', async () => {
   }
 
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
-  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()[0]).toBeFalsy()
+  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()).toBeFalsy()
 })
 
 test('Multiple groups without minimum', async () => {
@@ -65,7 +65,7 @@ test('Multiple groups without minimum', async () => {
       'user2',
       'user3',
       'user4'
-    ]).satisfy()[0]
+    ]).satisfy()
   ).toBeTruthy()
   expect(
     new ReviewGatekeeper(settings, [
@@ -74,13 +74,13 @@ test('Multiple groups without minimum', async () => {
       'user3',
       'user4',
       'user5'
-    ]).satisfy()[0]
+    ]).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeFalsy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeFalsy()
 })
 
@@ -99,15 +99,15 @@ test('One group with minimum', async () => {
   }
 
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2', 'user4']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user4']).satisfy()
   ).toBeTruthy()
-  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()[0]).toBeFalsy()
+  expect(new ReviewGatekeeper(settings, ['user1']).satisfy()).toBeFalsy()
 })
 
 test('Multiple groups with minimum', async () => {
@@ -131,15 +131,15 @@ test('Multiple groups with minimum', async () => {
   }
 
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user3', 'user4']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user3', 'user4']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2', 'user4']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user4']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2', 'user3']).satisfy()
   ).toBeTruthy()
   expect(
-    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()[0]
+    new ReviewGatekeeper(settings, ['user1', 'user2']).satisfy()
   ).toBeFalsy()
 })

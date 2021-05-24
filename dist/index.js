@@ -64,9 +64,8 @@ function run() {
                 }
             }
             const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
-            const [satisfy, message] = review_gatekeeper.satisfy();
-            if (!satisfy) {
-                core.setFailed(message);
+            if (!review_gatekeeper.satisfy()) {
+                core.setFailed(review_gatekeeper.getMessages().join('¥n'));
                 return;
             }
         }
@@ -108,16 +107,16 @@ class ReviewGatekeeper {
     constructor(settings, approved_users) {
         this.settings = settings;
         this.approved_users = approved_users;
+        this.messages = [];
     }
     satisfy() {
         const approvals = this.settings.approvals;
+        let ret = true;
         // check if the minimum criteria is met.
         if (approvals.minimum) {
             if (approvals.minimum > this.approved_users.length) {
-                return [
-                    false,
-                    `${approvals.minimum} reviewers should approve this PR (currently: ${this.approved_users.length})`
-                ];
+                ret = false;
+                this.messages.push(`${approvals.minimum} reviewers should approve this PR (currently: ${this.approved_users.length})`);
             }
         }
         // check if the groups criteria is met.
@@ -129,32 +128,23 @@ class ReviewGatekeeper {
                 const minimum_of_group = approvals.groups[group].minimum;
                 if (minimum_of_group) {
                     if (minimum_of_group > approved_from_this_group.size) {
-                        return [
-                            false,
-                            `${minimum_of_group} reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR (currently: ${approved_from_this_group.size})`
-                        ];
-                    }
-                    else {
-                        // Go on to the next group.
-                        continue;
+                        ret = false;
+                        this.messages.push(`${minimum_of_group} reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR (currently: ${approved_from_this_group.size})`);
                     }
                 }
                 else {
                     // If no `minimum` option is specified, approval from all is required.
                     if (!set_equal(approved_from_this_group, required_users)) {
-                        return [
-                            false,
-                            `All of the reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR`
-                        ];
-                    }
-                    else {
-                        // Go on to the next group.
-                        continue;
+                        ret = false;
+                        this.messages.push(`All of the reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR`);
                     }
                 }
             }
         }
-        return [true, null];
+        return ret;
+    }
+    getMessages() {
+        return this.messages;
     }
 }
 exports.ReviewGatekeeper = ReviewGatekeeper;
