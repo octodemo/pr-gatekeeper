@@ -1,6 +1,6 @@
 [![test](https://github.com/octodemo/review-approval-action/actions/workflows/test.yml/badge.svg)](https://github.com/octodemo/review-approval-action/actions/workflows/test.yml)
 
-# Review Approval Action
+# PR Gatekeeper
 
 This is an action created for the 2021 INTL FS Hackathon where we decided to reimplement [Zappr](https://zappr.opensource.zalan.do/login) in the form of a GitHub Action that will perform the required checks for complex pull request approval cases that are not currently supported by the [protected branches](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-settings) feature in GitHub.
 
@@ -35,7 +35,7 @@ approvals:
 Once the `approve_config.yml` file is in place, add the action to execute on every PR and then set it as a required action to start enforcing your new approval policy!
 
 ```yaml
-name: 'Review Gatekeeper'
+name: 'PR Gatekeeper'
 
 on:
   pull_request:
@@ -43,12 +43,12 @@ on:
   pull_request_review:
 
 jobs:
-  review-gatekeeper:
-    name: Review Gatekeeper
+  pr-gatekeeper:
+    name: PR Gatekeeper
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: octodemo/review-approval-action@main
+      - uses: octodemo/pr-gatekeeper@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
