@@ -1,17 +1,15 @@
 approvals:
-  # check will fail if there is no approval
+  # check will fail if there is not at least 4 approvals in total
   minimum: 4
   groups:
-    # check will fail if there is not at least 1 approval
-    # from backend persons
+    # check will fail if there is not at least 1 approval from backend
     backend:
       minimum: 1
       from:
         users:
           - yuichielectric
           - dchomh
-    # check will fail if there is not at least 2 approval
-    # from frontend persons
+    # check will fail if there is not at least 2 approval from frontend
     frontend:
       minimum: 2
       from:
