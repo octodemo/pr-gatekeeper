@@ -1,0 +1,16 @@
+name: 'Review Gatekeeper'
+
+on:
+  pull_request:
+    types: [assigned, unassigned, opened, reopened, synchronize, review_requested, review_request_removed]
+  pull_request_review:
+
+jobs:
+  review-gatekeeper:
+    name: Review Gatekeeper
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
