@@ -50,7 +50,6 @@ async function run(): Promise<void> {
     const sha = payload.pull_request.head.sha
     const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
     core.info(`Setting a status on commit (${sha})`)
-    core.info(workflow_url)
 
     octokit.repos.createCommitStatus({
       ...context.repo,
