@@ -45,6 +45,16 @@ async function run(): Promise<void> {
       config_file_contents as Settings,
       Array.from(approved_users)
     )
+
+    octokit.repos.createCommitStatus({
+      ...context.repo,
+      sha: context.sha,
+      state: review_gatekeeper.satisfy() ? 'success' : 'failure',
+      context: 'PR Gatekeeper',
+      description: review_gatekeeper.satisfy()
+        ? undefined
+        : review_gatekeeper.getMessages().join(' ')
+    })
     if (!review_gatekeeper.satisfy()) {
       core.setFailed(review_gatekeeper.getMessages().join(EOL))
       return
