@@ -53,7 +53,7 @@ async function run(): Promise<void> {
       context: 'PR Gatekeeper',
       description: review_gatekeeper.satisfy()
         ? undefined
-        : review_gatekeeper.getMessages().join(' ')
+        : review_gatekeeper.getMessages().join(' ').substr(0, 140)
     })
     if (!review_gatekeeper.satisfy()) {
       core.setFailed(review_gatekeeper.getMessages().join(EOL))
