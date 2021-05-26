@@ -49,13 +49,13 @@ async function run(): Promise<void> {
     const success = review_gatekeeper.satisfy()
     const sha = payload.pull_request.head.sha
     core.info(`Setting a status on commit (${sha})`)
+    core.info(context.workflow)
 
     octokit.repos.createCommitStatus({
       ...context.repo,
       sha,
       state: success ? 'success' : 'failure',
       context: 'PR Gatekeeper Status',
-      target_url: context.action,
       description: success
         ? undefined
         : review_gatekeeper.getMessages().join(' ').substr(0, 140)
