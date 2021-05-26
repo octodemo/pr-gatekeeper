@@ -65,8 +65,10 @@ function run() {
                 }
             }
             const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
-            octokit.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha: context.sha, state: review_gatekeeper.satisfy() ? 'success' : 'failure', context: 'PR Gatekeeper', description: 'test' }));
-            if (!review_gatekeeper.satisfy()) {
+            const success = review_gatekeeper.satisfy();
+            core.info(`Setting a status on commit (${context.sha})`);
+            octokit.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha: context.sha, state: success ? 'success' : 'failure', context: 'PR Gatekeeper', description: success ? undefined : review_gatekeeper.getMessages().join(' ').substr(0, 140) }));
+            if (!success) {
                 core.setFailed(review_gatekeeper.getMessages().join(os_1.EOL));
                 return;
             }

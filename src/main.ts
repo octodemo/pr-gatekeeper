@@ -46,15 +46,20 @@ async function run(): Promise<void> {
       Array.from(approved_users)
     )
 
+    const success = review_gatekeeper.satisfy()
+    core.info(`Setting a status on commit (${context.sha})`)
+
     octokit.repos.createCommitStatus({
       ...context.repo,
       sha: context.sha,
-      state: review_gatekeeper.satisfy() ? 'success' : 'failure',
+      state: success ? 'success' : 'failure',
       context: 'PR Gatekeeper',
-      description: 'test'
+      description: success
+        ? undefined
+        : review_gatekeeper.getMessages().join(' ').substr(0, 140)
     })
 
-    if (!review_gatekeeper.satisfy()) {
+    if (!success) {
       core.setFailed(review_gatekeeper.getMessages().join(EOL))
       return
     }
