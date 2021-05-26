@@ -68,6 +68,7 @@ function run() {
             const success = review_gatekeeper.satisfy();
             const sha = payload.pull_request.head.sha;
             core.info(`Setting a status on commit (${sha})`);
+            core.info(`Debug: ${context.ref}`);
             octokit.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: success ? 'success' : 'failure', context: 'PR Gatekeeper', description: success
                     ? undefined
                     : review_gatekeeper.getMessages().join(' ').substr(0, 140) }));
