@@ -48,14 +48,16 @@ async function run(): Promise<void> {
 
     const success = review_gatekeeper.satisfy()
     const sha = payload.pull_request.head.sha
+    const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
     core.info(`Setting a status on commit (${sha})`)
-    core.info(process.env.GITHUB_SERVER_URL!)
+    core.info(workflow_url)
 
     octokit.repos.createCommitStatus({
       ...context.repo,
       sha,
       state: success ? 'success' : 'failure',
       context: 'PR Gatekeeper Status',
+      target_url: workflow_url,
       description: success
         ? undefined
         : review_gatekeeper.getMessages().join(' ').substr(0, 140)
