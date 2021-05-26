@@ -48,6 +48,8 @@ async function run(): Promise<void> {
 
     const success = review_gatekeeper.satisfy()
     const sha = payload.pull_request.head.sha
+    // The workflow url can be obtained by combining several environment varialbes, as described below:
+    // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
     const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
     core.info(`Setting a status on commit (${sha})`)
 

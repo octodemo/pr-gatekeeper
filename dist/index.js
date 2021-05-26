@@ -67,6 +67,8 @@ function run() {
             const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
             const success = review_gatekeeper.satisfy();
             const sha = payload.pull_request.head.sha;
+            // The workflow url can be obtained by combining several environment varialbes, as described below:
+            // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
             const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`;
             core.info(`Setting a status on commit (${sha})`);
             octokit.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: success ? 'success' : 'failure', context: 'PR Gatekeeper Status', target_url: workflow_url, description: success
