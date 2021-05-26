@@ -54,7 +54,7 @@ async function run(): Promise<void> {
       ...context.repo,
       sha,
       state: success ? 'success' : 'failure',
-      context: 'PR Gatekeeper',
+      context: 'PR Gatekeeper Status',
       description: success
         ? undefined
         : review_gatekeeper.getMessages().join(' ').substr(0, 140)
