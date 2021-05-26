@@ -55,6 +55,7 @@ async function run(): Promise<void> {
       sha,
       state: success ? 'success' : 'failure',
       context: 'PR Gatekeeper Status',
+      target_url: context.action,
       description: success
         ? undefined
         : review_gatekeeper.getMessages().join(' ').substr(0, 140)
