@@ -68,7 +68,7 @@ function run() {
             const success = review_gatekeeper.satisfy();
             const sha = payload.pull_request.head.sha;
             core.info(`Setting a status on commit (${sha})`);
-            core.info(context.job);
+            core.info(process.env.GITHUB_SERVER_URL);
             octokit.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: success ? 'success' : 'failure', context: 'PR Gatekeeper Status', description: success
                     ? undefined
                     : review_gatekeeper.getMessages().join(' ').substr(0, 140) }));

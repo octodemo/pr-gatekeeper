@@ -49,7 +49,7 @@ async function run(): Promise<void> {
     const success = review_gatekeeper.satisfy()
     const sha = payload.pull_request.head.sha
     core.info(`Setting a status on commit (${sha})`)
-    core.info(context.job)
+    core.info(process.env.GITHUB_SERVER_URL!)
 
     octokit.repos.createCommitStatus({
       ...context.repo,
