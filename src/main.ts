@@ -30,7 +30,7 @@ async function run(): Promise<void> {
 
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
-    const reviews = await octokit.pulls.listReviews({
+    const reviews = await octokit.rest.pulls.listReviews({
       ...context.repo,
       pull_number: payload.pull_request.number
     })
