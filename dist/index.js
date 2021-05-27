@@ -65,6 +65,14 @@ function run() {
                 }
             }
             const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
+            const sha = payload.pull_request.head.sha;
+            // The workflow url can be obtained by combining several environment varialbes, as described below:
+            // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
+            const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`;
+            core.info(`Setting a status on commit (${sha})`);
+            octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: review_gatekeeper.satisfy() ? 'success' : 'failure', context: 'PR Gatekeeper Status', target_url: workflow_url, description: review_gatekeeper.satisfy()
+                    ? undefined
+                    : review_gatekeeper.getMessages().join(' ').substr(0, 140) }));
             if (!review_gatekeeper.satisfy()) {
                 core.setFailed(review_gatekeeper.getMessages().join(os_1.EOL));
                 return;
@@ -106,22 +114,18 @@ function set_to_string(as) {
 }
 class ReviewGatekeeper {
     constructor(settings, approved_users) {
-        this.settings = settings;
-        this.approved_users = approved_users;
         this.messages = [];
-    }
-    satisfy() {
-        const approvals = this.settings.approvals;
-        let ret = true;
+        this.meet_criteria = true;
+        const approvals = settings.approvals;
         // check if the minimum criteria is met.
         if (approvals.minimum) {
-            if (approvals.minimum > this.approved_users.length) {
-                ret = false;
-                this.messages.push(`${approvals.minimum} reviewers should approve this PR (currently: ${this.approved_users.length})`);
+            if (approvals.minimum > approved_users.length) {
+                this.meet_criteria = false;
+                this.messages.push(`${approvals.minimum} reviewers should approve this PR (currently: ${approved_users.length})`);
             }
         }
         // check if the groups criteria is met.
-        const approved = new Set(this.approved_users);
+        const approved = new Set(approved_users);
         if (approvals.groups) {
             for (const group in approvals.groups) {
                 const required_users = new Set(approvals.groups[group].from.users);
@@ -129,20 +133,22 @@ class ReviewGatekeeper {
                 const minimum_of_group = approvals.groups[group].minimum;
                 if (minimum_of_group) {
                     if (minimum_of_group > approved_from_this_group.size) {
-                        ret = false;
+                        this.meet_criteria = false;
                         this.messages.push(`${minimum_of_group} reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR (currently: ${approved_from_this_group.size})`);
                     }
                 }
                 else {
                     // If no `minimum` option is specified, approval from all is required.
                     if (!set_equal(approved_from_this_group, required_users)) {
-                        ret = false;
+                        this.meet_criteria = false;
                         this.messages.push(`All of the reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR`);
                     }
                 }
             }
         }
-        return ret;
+    }
+    satisfy() {
+        return this.meet_criteria;
     }
     getMessages() {
         return this.messages;

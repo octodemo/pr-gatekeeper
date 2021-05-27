@@ -59,4 +59,3 @@ jobs:
 - Add Dismiss stale pull request approvals when new commits are pushed equivalent option.
 - Ignore PR owner's review
 - Publish at GitHub Marketplace
-- Condense output into one action even if trigger name is different

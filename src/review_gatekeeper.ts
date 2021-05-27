@@ -34,26 +34,25 @@ function set_to_string<T>(as: Set<T>): string {
 
 export class ReviewGatekeeper {
   private messages: string[]
-  constructor(private settings: Settings, private approved_users: string[]) {
+  private meet_criteria: boolean
+
+  constructor(settings: Settings, approved_users: string[]) {
     this.messages = []
-  }
+    this.meet_criteria = true
 
-  satisfy(): boolean {
-    const approvals = this.settings.approvals
-    let ret = true
-
+    const approvals = settings.approvals
     // check if the minimum criteria is met.
     if (approvals.minimum) {
-      if (approvals.minimum > this.approved_users.length) {
-        ret = false
+      if (approvals.minimum > approved_users.length) {
+        this.meet_criteria = false
         this.messages.push(
-          `${approvals.minimum} reviewers should approve this PR (currently: ${this.approved_users.length})`
+          `${approvals.minimum} reviewers should approve this PR (currently: ${approved_users.length})`
         )
       }
     }
 
     // check if the groups criteria is met.
-    const approved = new Set(this.approved_users)
+    const approved = new Set(approved_users)
     if (approvals.groups) {
       for (const group in approvals.groups) {
         const required_users = new Set(approvals.groups[group].from.users)
@@ -61,7 +60,7 @@ export class ReviewGatekeeper {
         const minimum_of_group = approvals.groups[group].minimum
         if (minimum_of_group) {
           if (minimum_of_group > approved_from_this_group.size) {
-            ret = false
+            this.meet_criteria = false
             this.messages.push(
               `${minimum_of_group} reviewers from the group '${group}' (${set_to_string(
                 required_users
@@ -73,7 +72,7 @@ export class ReviewGatekeeper {
         } else {
           // If no `minimum` option is specified, approval from all is required.
           if (!set_equal(approved_from_this_group, required_users)) {
-            ret = false
+            this.meet_criteria = false
             this.messages.push(
               `All of the reviewers from the group '${group}' (${set_to_string(
                 required_users
@@ -83,7 +82,10 @@ export class ReviewGatekeeper {
         }
       }
     }
-    return ret
+  }
+
+  satisfy(): boolean {
+    return this.meet_criteria
   }
 
   getMessages(): string[] {
