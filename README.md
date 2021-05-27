@@ -4,7 +4,15 @@
 
 This is an action created for the 2021 INTL FS Hackathon where we decided to reimplement [Zappr](https://zappr.opensource.zalan.do/login) in the form of a GitHub Action that will perform the required checks for complex pull request approval cases that are not currently supported by the [protected branches](https://docs.github.com/en/github/administering-a-repository/defining-the-mergeability-of-pull-requests/about-protected-branches#about-branch-protection-settings) feature in GitHub.
 
+## How this action works
+
+This action is intended to be executed every time some change is made to the pull request (see [workflow example](#Workflow-config])). When this action is executed, it checks whether the review and approval status of the triggered pull request meets the policy described in the [action's config](#Action-config), and sets the result to a commit status named "PR Gatekeeper Status".
+
+<img src="./images/commit-status.png" width="">
+
 ## Configuration
+
+### Action config
 
 The action is configured via the `approve_config.yml` file located in the `.github` subdirectory. The general format is as follows.
 
@@ -29,8 +37,9 @@ approvals:
         users:
           - dchomh
           - rerwinx
-
 ```
+
+### Workflow config
 
 Once the `approve_config.yml` file is in place, add the action to execute on every PR and then set it as a required action to start enforcing your new approval policy!
 
