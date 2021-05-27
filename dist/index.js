@@ -64,7 +64,7 @@ function run() {
                     approved_users.add(review.user.login);
                 }
             }
-            const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users));
+            const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users), payload.pull_request.user.login);
             const sha = payload.pull_request.head.sha;
             // The workflow url can be obtained by combining several environment varialbes, as described below:
             // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
@@ -113,7 +113,7 @@ function set_to_string(as) {
     return [...as].join(', ');
 }
 class ReviewGatekeeper {
-    constructor(settings, approved_users) {
+    constructor(settings, approved_users, pr_owner) {
         this.messages = [];
         this.meet_criteria = true;
         const approvals = settings.approvals;
@@ -129,6 +129,8 @@ class ReviewGatekeeper {
         if (approvals.groups) {
             for (const group in approvals.groups) {
                 const required_users = new Set(approvals.groups[group].from.users);
+                // Remove PR owner from required uesrs because PR owner cannot approve their own PR.
+                required_users.delete(pr_owner);
                 const approved_from_this_group = set_intersect(required_users, approved);
                 const minimum_of_group = approvals.groups[group].minimum;
                 if (minimum_of_group) {

@@ -43,7 +43,8 @@ async function run(): Promise<void> {
 
     const review_gatekeeper = new ReviewGatekeeper(
       config_file_contents as Settings,
-      Array.from(approved_users)
+      Array.from(approved_users),
+      payload.pull_request.user.login
     )
 
     const sha = payload.pull_request.head.sha
