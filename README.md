@@ -8,7 +8,9 @@ This is an action created for the 2021 INTL FS Hackathon where we decided to rei
 
 This action is intended to be executed every time some change is made to the pull request (see [workflow example](#Workflow-config])). When this action is executed, it checks whether the review and approval status of the triggered pull request meets the policy described in the [action's config](#Action-config), and sets the result to a commit status named "PR Gatekeeper Status".
 
-<img src="./images/commit-status.png" width="">
+![screenshot](./images/commit-status.png)
+
+You can enforce the review policy described in action config by setting this "PR Gatekeeper Status" as required in the protected branch settings.
 
 ## Configuration
 
