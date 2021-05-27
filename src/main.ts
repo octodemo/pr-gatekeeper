@@ -30,7 +30,7 @@ async function run(): Promise<void> {
 
     const token: string = core.getInput('token')
     const octokit = github.getOctokit(token)
-    const reviews = await octokit.pulls.listReviews({
+    const reviews = await octokit.rest.pulls.listReviews({
       ...context.repo,
       pull_number: payload.pull_request.number
     })
@@ -43,7 +43,8 @@ async function run(): Promise<void> {
 
     const review_gatekeeper = new ReviewGatekeeper(
       config_file_contents as Settings,
-      Array.from(approved_users)
+      Array.from(approved_users),
+      payload.pull_request.user.login
     )
 
     const sha = payload.pull_request.head.sha
@@ -52,7 +53,7 @@ async function run(): Promise<void> {
     const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
     core.info(`Setting a status on commit (${sha})`)
 
-    octokit.repos.createCommitStatus({
+    octokit.rest.repos.createCommitStatus({
       ...context.repo,
       sha,
       state: review_gatekeeper.satisfy() ? 'success' : 'failure',
