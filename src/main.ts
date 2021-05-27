@@ -46,7 +46,6 @@ async function run(): Promise<void> {
       Array.from(approved_users)
     )
 
-    const success = review_gatekeeper.satisfy()
     const sha = payload.pull_request.head.sha
     // The workflow url can be obtained by combining several environment varialbes, as described below:
     // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
@@ -56,15 +55,15 @@ async function run(): Promise<void> {
     octokit.repos.createCommitStatus({
       ...context.repo,
       sha,
-      state: success ? 'success' : 'failure',
+      state: review_gatekeeper.satisfy() ? 'success' : 'failure',
       context: 'PR Gatekeeper Status',
       target_url: workflow_url,
-      description: success
+      description: review_gatekeeper.satisfy()
         ? undefined
         : review_gatekeeper.getMessages().join(' ').substr(0, 140)
     })
 
-    if (!success) {
+    if (!review_gatekeeper.satisfy()) {
       core.setFailed(review_gatekeeper.getMessages().join(EOL))
       return
     }
