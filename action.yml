@@ -1,5 +1,5 @@
 name: 'PR Gatekeeper'
-description: 'An action to perform the required checks for complex pull request approval cases that are not currently supported by the protected branches feature in GitHub.'
+description: 'An action to perform the required checks for complex pull request approval cases'
 author: 'octodemo'
 inputs:
   config-file:
