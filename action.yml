@@ -1,6 +1,6 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'PR Gatekeeper'
+description: 'An action to perform the required checks for complex pull request approval cases that are not currently supported by the protected branches feature in GitHub.'
+author: 'octodemo'
 inputs:
   config-file:
     required: false
