@@ -23,22 +23,17 @@ approvals:
   # check will fail if there is no approval
   minimum: 1
   groups:
-    # check will fail if there is not at least 1 approval
-    # from backend persons
-    backend:
-      minimum: 1
+    # Frontend team
+    - minimum: 1
+      name: frontend # optional
       from:
-        users:
-          - yuichielectric
-          - dchomh
-    # check will fail if there is not at least 2 approval
-    # from frontend persons
-    frontend:
-      minimum: 2
+        - yuichielectric
+        - dchomh
+        - octodemo/a-team # GitHub team
+    - minimum: 2
       from:
-        users:
-          - dchomh
-          - rerwinx
+        - dchomh
+        - rerwinx
 ```
 
 ### Workflow config
