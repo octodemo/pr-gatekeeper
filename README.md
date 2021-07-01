@@ -25,11 +25,10 @@ approvals:
   groups:
     # Frontend team
     - minimum: 1
-      name: frontend # optional
+      name: frontend
       from:
         - yuichielectric
         - dchomh
-        - octodemo/a-team # GitHub team
     - minimum: 2
       from:
         - dchomh
@@ -45,7 +44,16 @@ name: 'PR Gatekeeper'
 
 on:
   pull_request:
-    types: [assigned, unassigned, opened, reopened, synchronize, review_requested, review_request_removed]
+    types:
+      [
+        assigned,
+        unassigned,
+        opened,
+        reopened,
+        synchronize,
+        review_requested,
+        review_request_removed
+      ]
   pull_request_review:
 
 jobs:
