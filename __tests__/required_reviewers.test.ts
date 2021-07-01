@@ -28,13 +28,12 @@ test('Top level minimum', async () => {
 test('One group without minimum', async () => {
   const settings: Settings = {
     approvals: {
-      groups: {
-        group_a: {
-          from: {
-            users: ['user1', 'user2']
-          }
+      groups: [
+        {
+          name: 'group_a',
+          from: ['user1', 'user2']
         }
-      }
+      ]
     }
   }
 
@@ -56,18 +55,16 @@ test('One group without minimum', async () => {
 test('Multiple groups without minimum', async () => {
   const settings: Settings = {
     approvals: {
-      groups: {
-        group_a: {
-          from: {
-            users: ['user1', 'user2']
-          }
+      groups: [
+        {
+          name: 'group_a',
+          from: ['user1', 'user2']
         },
-        group_b: {
-          from: {
-            users: ['user3', 'user4', 'user2']
-          }
+        {
+          name: 'group_b',
+          from: ['user3', 'user4', 'user2']
         }
-      }
+      ]
     }
   }
 
@@ -100,14 +97,13 @@ test('Multiple groups without minimum', async () => {
 test('One group with minimum', async () => {
   const settings: Settings = {
     approvals: {
-      groups: {
-        group_a: {
+      groups: [
+        {
+          name: 'group_a',
           minimum: 2,
-          from: {
-            users: ['user1', 'user2', 'user3']
-          }
+          from: ['user1', 'user2', 'user3']
         }
-      }
+      ]
     }
   }
 
@@ -136,20 +132,18 @@ test('One group with minimum', async () => {
 test('Multiple groups with minimum', async () => {
   const settings: Settings = {
     approvals: {
-      groups: {
-        group_a: {
+      groups: [
+        {
+          name: 'group_a',
           minimum: 1,
-          from: {
-            users: ['user1', 'user2']
-          }
+          from: ['user1', 'user2']
         },
-        group_b: {
+        {
+          name: 'group_b',
           minimum: 2,
-          from: {
-            users: ['user3', 'user4', 'user2']
-          }
+          from: ['user3', 'user4', 'user2']
         }
-      }
+      ]
     }
   }
 
@@ -182,14 +176,13 @@ test('Multiple groups with minimum', async () => {
 test('PR owner', async () => {
   const settings: Settings = {
     approvals: {
-      groups: {
-        group_a: {
+      groups: [
+        {
+          name: 'group_a',
           minimum: 1,
-          from: {
-            users: ['user1', 'user2']
-          }
+          from: ['user1', 'user2']
         }
-      }
+      ]
     }
   }
 

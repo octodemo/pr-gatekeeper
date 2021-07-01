@@ -23,22 +23,16 @@ approvals:
   # check will fail if there is no approval
   minimum: 1
   groups:
-    # check will fail if there is not at least 1 approval
-    # from backend persons
-    backend:
-      minimum: 1
+    # Frontend team
+    - minimum: 1
+      name: frontend
       from:
-        users:
-          - yuichielectric
-          - dchomh
-    # check will fail if there is not at least 2 approval
-    # from frontend persons
-    frontend:
-      minimum: 2
+        - yuichielectric
+        - dchomh
+    - minimum: 2
       from:
-        users:
-          - dchomh
-          - rerwinx
+        - dchomh
+        - rerwinx
 ```
 
 ### Workflow config
@@ -50,7 +44,16 @@ name: 'PR Gatekeeper'
 
 on:
   pull_request:
-    types: [assigned, unassigned, opened, reopened, synchronize, review_requested, review_request_removed]
+    types:
+      [
+        assigned,
+        unassigned,
+        opened,
+        reopened,
+        synchronize,
+        review_requested,
+        review_request_removed
+      ]
   pull_request_review:
 
 jobs:

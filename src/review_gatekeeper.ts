@@ -2,13 +2,10 @@ export interface Settings {
   approvals: {
     minimum?: number
     groups?: {
-      [key: string]: {
-        minimum?: number
-        from: {
-          users: string[]
-        }
-      }
-    }
+      minimum?: number
+      name: string
+      from: string[]
+    }[]
   }
 }
 
@@ -54,17 +51,19 @@ export class ReviewGatekeeper {
     // check if the groups criteria is met.
     const approved = new Set(approved_users)
     if (approvals.groups) {
-      for (const group in approvals.groups) {
-        const required_users = new Set(approvals.groups[group].from.users)
+      for (const group of approvals.groups) {
+        const required_users = new Set(group.from)
         // Remove PR owner from required uesrs because PR owner cannot approve their own PR.
         required_users.delete(pr_owner)
         const approved_from_this_group = set_intersect(required_users, approved)
-        const minimum_of_group = approvals.groups[group].minimum
+        const minimum_of_group = group.minimum
         if (minimum_of_group) {
           if (minimum_of_group > approved_from_this_group.size) {
             this.meet_criteria = false
             this.messages.push(
-              `${minimum_of_group} reviewers from the group '${group}' (${set_to_string(
+              `${minimum_of_group} reviewers from the group '${
+                group.name
+              }' (${set_to_string(
                 required_users
               )}) should approve this PR (currently: ${
                 approved_from_this_group.size
@@ -76,9 +75,9 @@ export class ReviewGatekeeper {
           if (!set_equal(approved_from_this_group, required_users)) {
             this.meet_criteria = false
             this.messages.push(
-              `All of the reviewers from the group '${group}' (${set_to_string(
-                required_users
-              )}) should approve this PR`
+              `All of the reviewers from the group '${
+                group.name
+              }' (${set_to_string(required_users)}) should approve this PR`
             )
           }
         }
