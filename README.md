@@ -71,4 +71,3 @@ jobs:
 
 - Add a way to specify reviewers by GitHub team.
 - Add Dismiss stale pull request approvals when new commits are pushed equivalent option.
-- Publish at GitHub Marketplace
