@@ -3,8 +3,8 @@ import * as github from '@actions/github'
 import * as Webhooks from '@octokit/webhooks-types'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
-import { EOL } from 'os'
-import { Settings, ReviewGatekeeper } from './review_gatekeeper'
+import {EOL} from 'os'
+import {Settings, ReviewGatekeeper} from './review_gatekeeper'
 
 async function run(): Promise<void> {
   try {

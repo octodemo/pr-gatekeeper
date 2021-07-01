@@ -127,23 +127,23 @@ class ReviewGatekeeper {
         // check if the groups criteria is met.
         const approved = new Set(approved_users);
         if (approvals.groups) {
-            for (const group in approvals.groups) {
-                const required_users = new Set(approvals.groups[group].from.users);
+            for (const group of approvals.groups) {
+                const required_users = new Set(group.from);
                 // Remove PR owner from required uesrs because PR owner cannot approve their own PR.
                 required_users.delete(pr_owner);
                 const approved_from_this_group = set_intersect(required_users, approved);
-                const minimum_of_group = approvals.groups[group].minimum;
+                const minimum_of_group = group.minimum;
                 if (minimum_of_group) {
                     if (minimum_of_group > approved_from_this_group.size) {
                         this.meet_criteria = false;
-                        this.messages.push(`${minimum_of_group} reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR (currently: ${approved_from_this_group.size})`);
+                        this.messages.push(`${minimum_of_group} reviewers from the group '${group.name}' (${set_to_string(required_users)}) should approve this PR (currently: ${approved_from_this_group.size})`);
                     }
                 }
                 else {
                     // If no `minimum` option is specified, approval from all is required.
                     if (!set_equal(approved_from_this_group, required_users)) {
                         this.meet_criteria = false;
-                        this.messages.push(`All of the reviewers from the group '${group}' (${set_to_string(required_users)}) should approve this PR`);
+                        this.messages.push(`All of the reviewers from the group '${group.name}' (${set_to_string(required_users)}) should approve this PR`);
                     }
                 }
             }
@@ -294,7 +294,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
+exports.getState = exports.saveState = exports.group = exports.endGroup = exports.startGroup = exports.info = exports.warning = exports.error = exports.debug = exports.isDebug = exports.setFailed = exports.setCommandEcho = exports.setOutput = exports.getBooleanInput = exports.getMultilineInput = exports.getInput = exports.addPath = exports.setSecret = exports.exportVariable = exports.ExitCode = void 0;
 const command_1 = __nccwpck_require__(7351);
 const file_command_1 = __nccwpck_require__(717);
 const utils_1 = __nccwpck_require__(5278);
@@ -380,6 +380,21 @@ function getInput(name, options) {
     return val.trim();
 }
 exports.getInput = getInput;
+/**
+ * Gets the values of an multiline input.  Each value is also trimmed.
+ *
+ * @param     name     name of the input to get
+ * @param     options  optional. See InputOptions.
+ * @returns   string[]
+ *
+ */
+function getMultilineInput(name, options) {
+    const inputs = getInput(name, options)
+        .split('\n')
+        .filter(x => x !== '');
+    return inputs;
+}
+exports.getMultilineInput = getMultilineInput;
 /**
  * Gets the input value of the boolean type in the YAML 1.2 "core schema" specification.
  * Support boolean input list: `true | True | TRUE | false | False | FALSE` .

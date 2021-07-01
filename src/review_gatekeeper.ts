@@ -1,8 +1,7 @@
 export interface Settings {
   approvals: {
     minimum?: number
-    groups?:
-    {
+    groups?: {
       minimum?: number
       name: string
       from: string[]
@@ -62,9 +61,12 @@ export class ReviewGatekeeper {
           if (minimum_of_group > approved_from_this_group.size) {
             this.meet_criteria = false
             this.messages.push(
-              `${minimum_of_group} reviewers from the group '${group.name}' (${set_to_string(
+              `${minimum_of_group} reviewers from the group '${
+                group.name
+              }' (${set_to_string(
                 required_users
-              )}) should approve this PR (currently: ${approved_from_this_group.size
+              )}) should approve this PR (currently: ${
+                approved_from_this_group.size
               })`
             )
           }
@@ -73,9 +75,9 @@ export class ReviewGatekeeper {
           if (!set_equal(approved_from_this_group, required_users)) {
             this.meet_criteria = false
             this.messages.push(
-              `All of the reviewers from the group '${group.name}' (${set_to_string(
-                required_users
-              )}) should approve this PR`
+              `All of the reviewers from the group '${
+                group.name
+              }' (${set_to_string(required_users)}) should approve this PR`
             )
           }
         }

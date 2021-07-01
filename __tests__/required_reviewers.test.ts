@@ -1,4 +1,4 @@
-import { Settings, ReviewGatekeeper } from '../src/review_gatekeeper'
+import {Settings, ReviewGatekeeper} from '../src/review_gatekeeper'
 
 test('Top level minimum', async () => {
   const settings: Settings = {
