@@ -21,15 +21,15 @@ The action is configured via the `approve_config.yml` file located in the `.gith
 ```yaml
 approvals:
   # check will fail if there is no approval
-  minimum: 1
-  groups:
-    # Frontend team
-    - minimum: 1
-      name: frontend
+  minimum: 1     # optional
+  groups:        # optional
+    - name: frontend
+      minimum: 1 # optional
       from:
         - yuichielectric
         - dchomh
-    - minimum: 2
+    - name: backend
+      minimum: 2
       from:
         - dchomh
         - rerwinx
