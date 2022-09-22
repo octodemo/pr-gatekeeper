@@ -41,6 +41,9 @@ async function run(): Promise<void> {
       }
     }
 
+    core.debug(config_file_contents)
+    core.debug(Array.from(approved_users).join(', '))
+
     const review_gatekeeper = new ReviewGatekeeper(
       config_file_contents as Settings,
       Array.from(approved_users),
