@@ -4,7 +4,7 @@ import * as Webhooks from '@octokit/webhooks-types'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
 import {EOL} from 'os'
-import {Settings, ReviewGatekeeper} from './review_gatekeeper'
+import {Settings, ReviewGatekeeper} from './review-gatekeeper'
 
 async function run(): Promise<void> {
   try {
@@ -72,7 +72,9 @@ async function run(): Promise<void> {
       return
     }
   } catch (error) {
-    core.setFailed(error.message)
+    if (error instanceof Error) {
+      core.setFailed(error.message)
+    }
   }
 }
 
