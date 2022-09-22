@@ -56,6 +56,7 @@ async function run(): Promise<void> {
 
     octokit.rest.checks.create({
       ...context.repo,
+      name: 'PR Gatekeeper',
       head_sha: sha,
       status: 'completed',
       conclusion: review_gatekeeper.satisfy() ? 'success' : 'failure',
