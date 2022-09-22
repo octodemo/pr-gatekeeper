@@ -64,6 +64,8 @@ function run() {
                     approved_users.add(review.user.login);
                 }
             }
+            core.debug(config_file_contents);
+            core.debug(Array.from(approved_users).join(', '));
             const review_gatekeeper = new review_gatekeeper_1.ReviewGatekeeper(config_file_contents, Array.from(approved_users), payload.pull_request.user.login);
             const sha = payload.pull_request.head.sha;
             // The workflow url can be obtained by combining several environment varialbes, as described below:
