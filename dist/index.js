@@ -74,7 +74,7 @@ function run() {
             // The workflow url can be obtained by combining several environment varialbes, as described below:
             // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
             core.info(`Setting a status on commit (${sha})`);
-            octokit.rest.checks.create(Object.assign(Object.assign({}, context.repo), { name: 'PR Gatekeeper', head_sha: sha, status: 'completed', conclusion: review_gatekeeper.satisfy() ? 'success' : 'failure', output: {
+            octokit.rest.checks.create(Object.assign(Object.assign({}, context.repo), { name: github.context.job, head_sha: sha, status: 'completed', conclusion: review_gatekeeper.satisfy() ? 'success' : 'failure', output: {
                     title: 'PR Gatekeeper result',
                     summary: '# Summary'
                 } }));
