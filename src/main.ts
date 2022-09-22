@@ -62,9 +62,7 @@ async function run(): Promise<void> {
       state: review_gatekeeper.satisfy() ? 'success' : 'failure',
       context: 'PR Gatekeeper Status',
       target_url: workflow_url,
-      description: review_gatekeeper.satisfy()
-        ? undefined
-        : review_gatekeeper.getMessages().join(' ').substr(0, 140)
+      description: review_gatekeeper.satisfy() ? undefined : '# Summary'
     })
 
     if (!review_gatekeeper.satisfy()) {
