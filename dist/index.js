@@ -74,21 +74,25 @@ function run() {
             // The workflow url can be obtained by combining several environment varialbes, as described below:
             // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
             core.info(`Setting a status on commit (${sha})`);
-            octokit.rest.checks.create(Object.assign(Object.assign({}, context.repo), { name: github.context.job, head_sha: sha, status: 'completed', conclusion: review_gatekeeper.satisfy() ? 'success' : 'failure', output: {
-                    title: 'PR Gatekeeper result',
-                    summary: '# Summary'
-                } }));
             core.summary
-                .addHeading('Group', 1)
-                .addHeading('Approval status', 2)
-                .addHeading('Approver', 3)
-                .addHeading('Eligible approvers', 4)
                 .addTable([
-                ['application-development', ':white_check_mark: Complete', 'yuichielectric', 'yuichielectric, mohan-the-octocat'],
+                [
+                    { data: 'Group', header: true },
+                    { data: 'Approval status', header: true },
+                    { data: 'Approver', header: true },
+                    { data: 'Eligible approvers', header: true }
+                ],
+                [
+                    'application-development',
+                    ':white_check_mark: Complete',
+                    'yuichielectric',
+                    'yuichielectric, mohan-the-octocat'
+                ],
                 ['security-team', ':hourglass_flowing_sand: Pending', '', 'rohitnb']
-            ]).write();
+            ])
+                .write();
             if (!review_gatekeeper.satisfy()) {
-                core.setFailed('# Summary');
+                core.setFailed('failed');
                 return;
             }
         }
