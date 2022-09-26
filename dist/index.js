@@ -78,6 +78,15 @@ function run() {
                     title: 'PR Gatekeeper result',
                     summary: '# Summary'
                 } }));
+            core.summary
+                .addHeading('Group', 1)
+                .addHeading('Approval status', 2)
+                .addHeading('Approver', 3)
+                .addHeading('Eligible approvers', 4)
+                .addTable([
+                ['application-development', ':white_check_mark: Complete', 'yuichielectric', 'yuichielectric, mohan-the-octocat'],
+                ['security-team', ':hourglass_flowing_sand: Pending', '', 'rohitnb']
+            ]).write();
             if (!review_gatekeeper.satisfy()) {
                 core.setFailed('# Summary');
                 return;
