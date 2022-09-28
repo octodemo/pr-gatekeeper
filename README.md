@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: octodemo/pr-gatekeeper@main
+      - uses: octodemo/pr-gatekeeper@v1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 ```
