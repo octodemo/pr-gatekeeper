@@ -3,7 +3,6 @@ import * as github from '@actions/github'
 import * as Webhooks from '@octokit/webhooks-types'
 import * as fs from 'fs'
 import * as YAML from 'yaml'
-import {EOL} from 'os'
 import {Settings, ReviewGatekeeper} from './review-gatekeeper'
 
 async function run(): Promise<void> {
@@ -53,22 +52,28 @@ async function run(): Promise<void> {
     const sha = payload.pull_request.head.sha
     // The workflow url can be obtained by combining several environment varialbes, as described below:
     // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
-    const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`
     core.info(`Setting a status on commit (${sha})`)
 
-    octokit.rest.repos.createCommitStatus({
-      ...context.repo,
-      sha,
-      state: review_gatekeeper.satisfy() ? 'success' : 'failure',
-      context: 'PR Gatekeeper Status',
-      target_url: workflow_url,
-      description: review_gatekeeper.satisfy()
-        ? undefined
-        : review_gatekeeper.getMessages().join(' ').substr(0, 140)
-    })
+    core.summary
+      .addTable([
+        [
+          {data: 'Group', header: true},
+          {data: 'Approval status', header: true},
+          {data: 'Approver', header: true},
+          {data: 'Eligible approvers', header: true}
+        ],
+        [
+          'application-development',
+          ':white_check_mark: Complete',
+          'yuichielectric',
+          'yuichielectric, mohan-the-octocat'
+        ],
+        ['security-team', ':hourglass_flowing_sand: Pending', '', 'rohitnb']
+      ])
+      .write()
 
     if (!review_gatekeeper.satisfy()) {
-      core.setFailed(review_gatekeeper.getMessages().join(EOL))
+      core.setFailed('failed')
       return
     }
   } catch (error) {

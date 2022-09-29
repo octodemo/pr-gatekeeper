@@ -43,7 +43,6 @@ const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const fs = __importStar(__nccwpck_require__(5747));
 const YAML = __importStar(__nccwpck_require__(3552));
-const os_1 = __nccwpck_require__(2087);
 const review_gatekeeper_1 = __nccwpck_require__(2779);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -74,13 +73,26 @@ function run() {
             const sha = payload.pull_request.head.sha;
             // The workflow url can be obtained by combining several environment varialbes, as described below:
             // https://docs.github.com/en/actions/reference/environment-variables#default-environment-variables
-            const workflow_url = `${process.env['GITHUB_SERVER_URL']}/${process.env['GITHUB_REPOSITORY']}/actions/runs/${process.env['GITHUB_RUN_ID']}`;
             core.info(`Setting a status on commit (${sha})`);
-            octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: review_gatekeeper.satisfy() ? 'success' : 'failure', context: 'PR Gatekeeper Status', target_url: workflow_url, description: review_gatekeeper.satisfy()
-                    ? undefined
-                    : review_gatekeeper.getMessages().join(' ').substr(0, 140) }));
+            core.summary
+                .addTable([
+                [
+                    { data: 'Group', header: true },
+                    { data: 'Approval status', header: true },
+                    { data: 'Approver', header: true },
+                    { data: 'Eligible approvers', header: true }
+                ],
+                [
+                    'application-development',
+                    ':white_check_mark: Complete',
+                    'yuichielectric',
+                    'yuichielectric, mohan-the-octocat'
+                ],
+                ['security-team', ':hourglass_flowing_sand: Pending', '', 'rohitnb']
+            ])
+                .write();
             if (!review_gatekeeper.satisfy()) {
-                core.setFailed(review_gatekeeper.getMessages().join(os_1.EOL));
+                core.setFailed('failed');
                 return;
             }
         }
