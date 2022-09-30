@@ -60,7 +60,7 @@ async function run(): Promise<void> {
       ...context.repo,
       sha,
       state: review_gatekeeper.satisfy() ? 'success' : 'failure',
-      context: 'PR Gatekeeper Status',
+      context: `PR Gatekeeper Status (${payload.pull_request.base.ref})`,
       target_url: workflow_url,
       description: review_gatekeeper.satisfy()
         ? undefined
