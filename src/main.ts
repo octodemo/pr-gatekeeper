@@ -36,8 +36,8 @@ async function run(): Promise<void> {
     })
     const approved_users: Set<string> = new Set()
     for (const review of reviews.data) {
-      if (review.state === `APPROVED`) {
-        approved_users.add(review.user!.login)
+      if (review.state === `APPROVED` && review.user) {
+        approved_users.add(review.user.login)
       }
     }
 
@@ -64,7 +64,7 @@ async function run(): Promise<void> {
       target_url: workflow_url,
       description: review_gatekeeper.satisfy()
         ? undefined
-        : review_gatekeeper.getMessages().join(' ').substr(0, 140)
+        : review_gatekeeper.getMessages().join(' ').substring(0, 140)
     })
 
     if (!review_gatekeeper.satisfy()) {
