@@ -64,7 +64,7 @@ function run() {
             const reviews = yield octokit.rest.pulls.listReviews(Object.assign(Object.assign({}, context.repo), { pull_number: payload.pull_request.number }));
             const approved_users = new Set();
             for (const review of reviews.data) {
-                if (review.state === `APPROVED`) {
+                if (review.state === `APPROVED` && review.user) {
                     approved_users.add(review.user.login);
                 }
             }
@@ -78,7 +78,7 @@ function run() {
             core.info(`Setting a status on commit (${sha})`);
             octokit.rest.repos.createCommitStatus(Object.assign(Object.assign({}, context.repo), { sha, state: review_gatekeeper.satisfy() ? 'success' : 'failure', context: 'PR Gatekeeper Status', target_url: workflow_url, description: review_gatekeeper.satisfy()
                     ? undefined
-                    : review_gatekeeper.getMessages().join(' ').substr(0, 140) }));
+                    : review_gatekeeper.getMessages().join(' ').substring(0, 140) }));
             if (!review_gatekeeper.satisfy()) {
                 core.setFailed(review_gatekeeper.getMessages().join(os_1.EOL));
                 return;
