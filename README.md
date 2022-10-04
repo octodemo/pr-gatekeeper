@@ -5,10 +5,10 @@
 This action is a status check to validate if specific reviewers have provided approvals within your PR workflows. Repo owners/ admins can configure the following:
 - The minimum no. of approvals needed 
 - The various groups and it's members and minimum no. of approvals within each group
-- _The action current supports only people and not GitHub teams_
+- _The action currently supports only people and not GitHub teams_
 
 ## How this action works
-This action is triggered every time some change is made to the pull request (see [workflow example](#Workflow-config])). It checks whether the review and approval status of the pull request meets the policy described in the [action's config](#Action-config), and sets the result to a commit status named "PR Gatekeeper Status".
+This action is triggered every time some change is made to the pull request (see [workflow example](#Workflow-config)). It checks whether the review and approval status of the pull request meets the policy described in the [action's config](#Action-config), and sets the result to a commit status named "PR Gatekeeper Status".
 
 ![screenshot](./images/commit-status.png)
 You can enforce the review policy described in [action's config](#Action-config) by setting this "PR Gatekeeper Status" as required in the protected branch settings.
@@ -32,7 +32,7 @@ approvals:
   # check will fail if there is no approval
   minimum: 1     # optional, leave blank or a value greater than or equal to the Branch Protection Rules `Required no. of approvals`
   groups:        # optional
-    - name: frontend #This would be the first team or group of reviewers
+    - name: frontend # This would be the first team or group of reviewers
       minimum: 1 # optional, leaving this blank would make the review optional for this group. Uncommon, but possible
       from:
         - octocat1 # Ensure the username has no @ prefix
